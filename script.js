@@ -15,17 +15,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const historyPanel = document.getElementById('historyPanel');
     const closeHistory = document.getElementById('closeHistory');
     const historyRecords = document.getElementById('historyRecords');
+    const okxExchangeResult = document.getElementById('okxExchangeResult');
 
     // 匯率輸入欄位
     const usdtAmount = document.getElementById('usdtAmount');
     const cnyAmount = document.getElementById('cnyAmount');
-    const okxRateValue = document.getElementById('okxRateValue');
-    const okxRateResult = document.getElementById('okxRateResult');
+    const okxRate = document.getElementById('okxRate');
+    const okxResult = document.getElementById('okxResult');
     const kuRate = document.getElementById('kuRate');
     const merchantARateUsdtToCny = document.getElementById('merchantARateUsdtToCny');
     const merchantBRateUsdtToCny = document.getElementById('merchantBRateUsdtToCny');
-    const okxRateValueCny = document.getElementById('okxRateValueCny');
-    const okxRateResultCny = document.getElementById('okxRateResultCny');
+    const okxRateCny = document.getElementById('okxRateCny');
+    const okxResultCny = document.getElementById('okxResultCny');
     const kuRateCny = document.getElementById('kuRateCny');
     const merchantARateCnyToUsdt = document.getElementById('merchantARateCnyToUsdt');
     const merchantBRateCnyToUsdt = document.getElementById('merchantBRateCnyToUsdt');
@@ -47,11 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const merchantAKuAmount = document.getElementById('merchantAKuAmount');
     const merchantBKuAmount = document.getElementById('merchantBKuAmount');
     const differenceAmount = document.getElementById('differenceAmount');
-    const okxExchangeResult = document.getElementById('okxExchangeResult');
-
-    // OKX API相關
-    const fetchOkxRateBtn = document.getElementById('fetchOkxRateBtn');
-    const fetchOkxRateBtnCny = document.getElementById('fetchOkxRateBtnCny');
     
     // 歷史記錄數組
     let calculationHistory = loadHistory();
@@ -65,9 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
         gameResultCard.classList.add('hidden');
         amountDisplay.textContent = usdtAmount.value;
         currencyDisplay.textContent = 'USDT';
-        
-        // 自動獲取OKX匯率 (USDT到人民幣使用OKX賣出價)
-        fetchOkxSellRate();
     });
 
     cnyToUsdtBtn.addEventListener('click', function() {
@@ -78,138 +71,46 @@ document.addEventListener('DOMContentLoaded', function() {
         gameResultCard.classList.add('hidden');
         amountDisplay.textContent = cnyAmount.value;
         currencyDisplay.textContent = '人民幣';
-        
-        // 自動獲取OKX匯率 (人民幣到USDT使用OKX買入價)
-        fetchOkxBuyRate();
     });
 
     // 更新顯示金額
     usdtAmount.addEventListener('input', function() {
         if (usdtToCnyBtn.classList.contains('active')) {
             amountDisplay.textContent = this.value;
-            updateOkxResult('usdtToCny');
+            updateOkxResult();
         }
     });
 
     cnyAmount.addEventListener('input', function() {
         if (cnyToUsdtBtn.classList.contains('active')) {
             amountDisplay.textContent = this.value;
-            updateOkxResult('cnyToUsdt');
+            updateOkxResultCny();
         }
     });
 
-    // 獲取OKX賣出價 (用於USDT到人民幣)
-    function fetchOkxSellRate() {
-        okxRateValue.textContent = '獲取中...';
+    // 根據OKX匯率更新計算結果
+    function updateOkxResult() {
+        const usdtAmountValue = parseFloat(usdtAmount.value) || 0;
+        const okxRateValue = parseFloat(okxRate.value) || 0;
         
-        // 使用CORS代理
-        const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-        fetch(corsProxy + 'https://www.okx.com/api/v5/market/ticker?instId=USDT-CNY')
-            .then(response => response.json())
-            .then(data => {
-                try {
-                    // OKX API返回的賣出價 (ask price)
-                    const sellRate = parseFloat(data.data[0].askPx).toFixed(4);
-                    okxRateValue.textContent = sellRate + ' CNY/USDT';
-                    
-                    // 更新計算結果
-                    updateOkxResult('usdtToCny', sellRate);
-                    
-                    return sellRate;
-                } catch (error) {
-                    console.error('解析OKX數據出錯:', error);
-                    // 回退到模擬數據
-                    const fallbackRate = (7.15 + Math.random() * 0.15).toFixed(4);
-                    okxRateValue.textContent = fallbackRate + ' CNY/USDT (模擬)';
-                    updateOkxResult('usdtToCny', fallbackRate);
-                    return fallbackRate;
-                }
-            })
-            .catch(error => {
-                console.error('獲取OKX匯率失敗:', error);
-                // 回退到模擬數據
-                const fallbackRate = (7.15 + Math.random() * 0.15).toFixed(4);
-                okxRateValue.textContent = fallbackRate + ' CNY/USDT (模擬)';
-                updateOkxResult('usdtToCny', fallbackRate);
-                return fallbackRate;
-            });
-    }
-
-    // 獲取OKX買入價 (用於人民幣到USDT)
-    function fetchOkxBuyRate() {
-        okxRateValueCny.textContent = '獲取中...';
-        
-        // 使用CORS代理
-        const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-        fetch(corsProxy + 'https://www.okx.com/api/v5/market/ticker?instId=USDT-CNY')
-            .then(response => response.json())
-            .then(data => {
-                try {
-                    // OKX API返回的買入價 (bid price)
-                    const buyRate = parseFloat(data.data[0].bidPx).toFixed(4);
-                    okxRateValueCny.textContent = buyRate + ' CNY/USDT';
-                    
-                    // 更新計算結果
-                    updateOkxResult('cnyToUsdt', buyRate);
-                    
-                    return buyRate;
-                } catch (error) {
-                    console.error('解析OKX數據出錯:', error);
-                    // 回退到模擬數據
-                    const fallbackRate = (7.25 + Math.random() * 0.15).toFixed(4);
-                    okxRateValueCny.textContent = fallbackRate + ' CNY/USDT (模擬)';
-                    updateOkxResult('cnyToUsdt', fallbackRate);
-                    return fallbackRate;
-                }
-            })
-            .catch(error => {
-                console.error('獲取OKX匯率失敗:', error);
-                // 回退到模擬數據
-                const fallbackRate = (7.25 + Math.random() * 0.15).toFixed(4);
-                okxRateValueCny.textContent = fallbackRate + ' CNY/USDT (模擬)';
-                updateOkxResult('cnyToUsdt', fallbackRate);
-                return fallbackRate;
-            });
-    }
-
-    // 點擊刷新按鈕重新獲取匯率
-    fetchOkxRateBtn.addEventListener('click', fetchOkxSellRate);
-    fetchOkxRateBtnCny.addEventListener('click', fetchOkxBuyRate);
-
-    // 根據最新匯率更新計算結果
-    function updateOkxResult(direction, rate) {
-        if (direction === 'usdtToCny') {
-            const usdtAmountValue = parseFloat(usdtAmount.value) || 0;
-            
-            if (!rate) {
-                // 從顯示文本中提取匯率
-                const rateText = okxRateValue.textContent;
-                const rateMatch = rateText.match(/(\d+\.\d+)/);
-                if (rateMatch) {
-                    rate = parseFloat(rateMatch[1]);
-                } else {
-                    return;
-                }
-            }
-            
-            okxRateResult.textContent = 
-                `${usdtAmountValue} USDT ≈ ${(usdtAmountValue * rate).toFixed(2)} 人民幣`;
+        if (okxRateValue && usdtAmountValue) {
+            okxResult.textContent = 
+                `${usdtAmountValue} USDT ≈ ${(usdtAmountValue * okxRateValue).toFixed(2)} 人民幣`;
         } else {
-            const cnyAmountValue = parseFloat(cnyAmount.value) || 0;
-            
-            if (!rate) {
-                // 從顯示文本中提取匯率
-                const rateText = okxRateValueCny.textContent;
-                const rateMatch = rateText.match(/(\d+\.\d+)/);
-                if (rateMatch) {
-                    rate = parseFloat(rateMatch[1]);
-                } else {
-                    return;
-                }
-            }
-            
-            okxRateResultCny.textContent = 
-                `${cnyAmountValue} 人民幣 ≈ ${(cnyAmountValue / rate).toFixed(4)} USDT`;
+            okxResult.textContent = '--';
+        }
+    }
+
+    // 根據OKX匯率更新計算結果（人民幣到USDT）
+    function updateOkxResultCny() {
+        const cnyAmountValue = parseFloat(cnyAmount.value) || 0;
+        const okxRateValue = parseFloat(okxRateCny.value) || 0;
+        
+        if (okxRateValue && cnyAmountValue) {
+            okxResultCny.textContent = 
+                `${cnyAmountValue} 人民幣 ≈ ${(cnyAmountValue / okxRateValue).toFixed(4)} USDT`;
+        } else {
+            okxResultCny.textContent = '--';
         }
     }
 
@@ -270,8 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // USDT到人民幣計算
     calculateUsdtToCny.addEventListener('click', function() {
         const usdtAmountValue = parseFloat(usdtAmount.value);
-        const okxRateMatch = okxRateValue.textContent.match(/(\d+\.\d+)/);
-        const okxRateValueNum = okxRateMatch ? parseFloat(okxRateMatch[1]) : 0;
+        const okxRateValue = parseFloat(okxRate.value);
         const kuRateValue = parseFloat(kuRate.value);
         const merchantARateValue = parseFloat(merchantARateUsdtToCny.value);
         const merchantBRateValue = parseFloat(merchantBRateUsdtToCny.value);
@@ -287,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const merchantBTotal = (usdtAmountValue * merchantBRateValue).toFixed(2);
         
         // 顯示遊戲式結果頁面
-        displayGameResult('USDT to 人民幣', usdtAmountValue, merchantARateValue, merchantBRateValue, merchantATotal, merchantBTotal, okxRateValueNum, kuRateValue);
+        displayGameResult('USDT to 人民幣', usdtAmountValue, merchantARateValue, merchantBRateValue, merchantATotal, merchantBTotal, okxRateValue, kuRateValue);
         
         // 保存記錄
         saveCalculation('USDT to 人民幣', usdtAmountValue, merchantARateValue, merchantBRateValue, merchantATotal, merchantBTotal, merchantARateValue > merchantBRateValue ? 'A' : 'B');
@@ -296,8 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 人民幣到USDT計算
     calculateCnyToUsdt.addEventListener('click', function() {
         const cnyAmountValue = parseFloat(cnyAmount.value);
-        const okxRateMatch = okxRateValueCny.textContent.match(/(\d+\.\d+)/);
-        const okxRateValueNum = okxRateMatch ? parseFloat(okxRateMatch[1]) : 0;
+        const okxRateValue = parseFloat(okxRateCny.value);
         const kuRateValue = parseFloat(kuRateCny.value);
         const merchantARateValue = parseFloat(merchantARateCnyToUsdt.value);
         const merchantBRateValue = parseFloat(merchantBRateCnyToUsdt.value);
@@ -313,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const merchantBTotal = (cnyAmountValue / merchantBRateValue).toFixed(4);
         
         // 顯示遊戲式結果頁面
-        displayGameResult('人民幣 to USDT', cnyAmountValue, merchantARateValue, merchantBRateValue, merchantATotal, merchantBTotal, okxRateValueNum, kuRateValue);
+        displayGameResult('人民幣 to USDT', cnyAmountValue, merchantARateValue, merchantBRateValue, merchantATotal, merchantBTotal, okxRateValue, kuRateValue);
         
         // 保存記錄
         saveCalculation('人民幣 to USDT', cnyAmountValue, merchantARateValue, merchantBRateValue, merchantATotal, merchantBTotal, merchantARateValue < merchantBRateValue ? 'A' : 'B');
@@ -328,6 +227,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // 設置匯率等級
         kuRateLevel.textContent = kuRateValue || '--';
         okxRateLevel.textContent = okxRate || '--';
+
+        // 設置OKX換算結果
+        if (okxRate) {
+            if (direction === 'USDT to 人民幣') {
+                // 如果是USDT到人民幣，計算OKX結果
+                const okxTotal = (amount * okxRate).toFixed(2);
+                okxExchangeResult.textContent = `￥${parseFloat(okxTotal).toLocaleString('zh-CN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            } else {
+                // 如果是人民幣到USDT，計算OKX結果
+                const okxTotal = (amount / okxRate).toFixed(4);
+                okxExchangeResult.textContent = `${parseFloat(okxTotal).toLocaleString('zh-CN', {minimumFractionDigits: 4, maximumFractionDigits: 4})} USDT`;
+            }
+        } else {
+            okxExchangeResult.textContent = '-- (請輸入OKX匯率)';
+        }
 
         // 判斷哪個商家更好
         let isMerchantABetter;
@@ -350,17 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
             bestRateInfo.textContent = `匯率: ${rateB.toFixed(2)}`;
             merchantBOption.classList.add('winner');
             merchantAOption.classList.remove('winner');
-        }
-
-        // 設置OKX換算結果
-        if (direction === 'USDT to 人民幣') {
-            // 如果是USDT到人民幣，使用OKX賣出價計算
-            const okxTotal = (amount * okxRate).toFixed(2);
-            okxExchangeResult.textContent = `￥${parseFloat(okxTotal).toLocaleString('zh-CN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        } else {
-            // 如果是人民幣到USDT，使用OKX買入價計算
-            const okxTotal = (amount / okxRate).toFixed(4);
-            okxExchangeResult.textContent = `${parseFloat(okxTotal).toLocaleString('zh-CN', {minimumFractionDigits: 4, maximumFractionDigits: 4})} USDT`;
         }
 
         // 設置金額和匯率
@@ -540,10 +443,11 @@ document.addEventListener('DOMContentLoaded', function() {
     merchantARateUsdtToCny.addEventListener('input', updateMerchantResults);
     merchantBRateUsdtToCny.addEventListener('input', updateMerchantResults);
     kuRate.addEventListener('input', updateMerchantResults);
+    
+    // 添加OKX匯率輸入監聽器
+    okxRate.addEventListener('input', updateOkxResult);
+    okxRateCny.addEventListener('input', updateOkxResultCny);
 
     // 載入html2canvas庫
     loadHTML2Canvas().catch(console.error);
-    
-    // 初始化獲取OKX匯率
-    fetchOkxSellRate();
 }); 
