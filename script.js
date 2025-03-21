@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeHistory = document.getElementById('closeHistory');
     const historyRecords = document.getElementById('historyRecords');
     const okxExchangeResult = document.getElementById('okxExchangeResult');
+    const okxRateTitle = document.getElementById('okxRateTitle');
+    const okxRateTitleCny = document.getElementById('okxRateTitleCny');
 
     // 匯率輸入欄位
     const usdtAmount = document.getElementById('usdtAmount');
@@ -61,6 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
         gameResultCard.classList.add('hidden');
         amountDisplay.textContent = usdtAmount.value;
         currencyDisplay.textContent = 'USDT';
+        // 设置OKX价格标题
+        okxRateTitle.textContent = '歐易出售價格';
     });
 
     cnyToUsdtBtn.addEventListener('click', function() {
@@ -71,6 +75,8 @@ document.addEventListener('DOMContentLoaded', function() {
         gameResultCard.classList.add('hidden');
         amountDisplay.textContent = cnyAmount.value;
         currencyDisplay.textContent = '人民幣';
+        // 设置OKX价格标题
+        okxRateTitleCny.textContent = '歐易購買價格';
     });
 
     // 更新顯示金額
