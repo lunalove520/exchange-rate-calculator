@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匯率比較工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 主卡片 -->
+        <div class="card main-card">
+            <div class="card-header">
+                <div class="back-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </div>
+                <h1>匯率比較工具</h1>
+                <div class="filter-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                        <line x1="1" y1="14" x2="7" y2="14"></line>
+                        <line x1="9" y1="8" x2="15" y2="8"></line>
+                        <line x1="17" y1="16" x2="23" y2="16"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="exchange-amount">
+                <div class="wallet-icon">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                </div>
+                <div class="amount">
+                    <span id="amountDisplay">2225</span> <span id="currencyDisplay">USDT</span>
+                </div>
+            </div>
+
+            <!-- 方向选择按钮 -->
+            <div class="direction-selector">
+                <button id="usdtToCnyBtn" class="direction-button active">USDT → 人民幣</button>
+                <button id="cnyToUsdtBtn" class="direction-button">人民幣 → USDT</button>
+            </div>
+
+            <!-- USDT 到 人民幣 表单 -->
+            <div id="usdtToCnyForm" class="exchange-form">
+                <div class="input-group">
+                    <label for="usdtAmount">USDT 金額</label>
+                    <input type="number" id="usdtAmount" class="amount-input" value="2225" placeholder="輸入 USDT 金額">
+                </div>
+
+                <div class="rates-container">
+                    <!-- OKX 价格 (自动获取) -->
+                    <div class="rate-card">
+                        <div class="rate-header">
+                            <h3>歐易 OKX 價格</h3>
+                            <button id="fetchOkxRateBtn" class="refresh-btn">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 8C1 11.866 4.13401 15 8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1" />
+                                    <path d="M8 1L5 3.5L8 6" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="rate-value" id="okxRateValue">獲取中...</div>
+                        <div class="rate-result" id="okxRateResult">--</div>
+                    </div>
+
+                    <!-- KU Rate (手动输入) -->
+                    <div class="rate-card">
+                        <div class="rate-header">
+                            <h3>KU 匯率</h3>
+                        </div>
+                        <input type="number" id="kuRate" class="rate-input" placeholder="輸入 KU 匯率" step="0.01">
+                        <div class="rate-result" id="kuResult">--</div>
+                    </div>
+                </div>
+
+                <div class="rates-container">
+                    <!-- Merchant A -->
+                    <div class="rate-card">
+                        <div class="rate-header">
+                            <h3>商家 A</h3>
+                        </div>
+                        <input type="number" id="merchantARateUsdtToCny" class="rate-input" placeholder="商家 A 匯率" step="0.01">
+                        <div class="rate-result" id="merchantAResultUsdtToCny">--</div>
+                    </div>
+
+                    <!-- Merchant B -->
+                    <div class="rate-card">
+                        <div class="rate-header">
+                            <h3>商家 B</h3>
+                        </div>
+                        <input type="number" id="merchantBRateUsdtToCny" class="rate-input" placeholder="商家 B 匯率" step="0.01">
+                        <div class="rate-result" id="merchantBResultUsdtToCny">--</div>
+                    </div>
+                </div>
+
+                <button id="calculateUsdtToCny" class="calculate-btn">計算最佳方案</button>
+            </div>
+
+            <!-- 人民幣 到 USDT 表单 -->
+            <div id="cnyToUsdtForm" class="exchange-form hidden">
+                <div class="input-group">
+                    <label for="cnyAmount">人民幣 金額</label>
+                    <input type="number" id="cnyAmount" class="amount-input" value="15000" placeholder="輸入人民幣金額">
+                </div>
+
+                <div class="rates-container">
+                    <!-- OKX 价格 (自动获取) -->
+                    <div class="rate-card">
+                        <div class="rate-header">
+                            <h3>歐易 OKX 價格</h3>
+                            <button id="fetchOkxRateBtnCny" class="refresh-btn">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 8C1 11.866 4.13401 15 8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1" />
+                                    <path d="M8 1L5 3.5L8 6" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="rate-value" id="okxRateValueCny">獲取中...</div>
+                        <div class="rate-result" id="okxRateResultCny">--</div>
+                    </div>
+
+                    <!-- KU Rate (手动输入) -->
+                    <div class="rate-card">
+                        <div class="rate-header">
+                            <h3>KU 匯率</h3>
+                        </div>
+                        <input type="number" id="kuRateCny" class="rate-input" placeholder="輸入 KU 匯率" step="0.01">
+                        <div class="rate-result" id="kuResultCny">--</div>
+                    </div>
+                </div>
+
+                <div class="rates-container">
+                    <!-- Merchant A -->
+                    <div class="rate-card" id="merchantACardCny">
+                        <div class="rate-header">
+                            <h3>商家 A</h3>
+                        </div>
+                        <input type="number" id="merchantARateCnyToUsdt" class="rate-input" placeholder="商家 A 匯率" step="0.01">
+                        <div class="rate-result" id="merchantAResultCnyToUsdt">--</div>
+                    </div>
+
+                    <!-- Merchant B -->
+                    <div class="rate-card" id="merchantBCardCny">
+                        <div class="rate-header">
+                            <h3>商家 B</h3>
+                        </div>
+                        <input type="number" id="merchantBRateCnyToUsdt" class="rate-input" placeholder="商家 B 匯率" step="0.01">
+                        <div class="rate-result" id="merchantBResultCnyToUsdt">--</div>
+                    </div>
+                </div>
+
+                <button id="calculateCnyToUsdt" class="calculate-btn">計算最佳方案</button>
+            </div>
+        </div>
+
+        <!-- 游戏式结果卡片 -->
+        <div id="gameResultCard" class="card game-result-card hidden">
+            <div class="score-header">
+                <div class="level-info">
+                    <span class="level-label">KU 匯率</span>
+                    <span class="level-value" id="kuRateLevel">7.44</span>
+                </div>
+                <div class="score-divider"></div>
+                <div class="score-info">
+                    <span class="score-label">歐易匯率</span>
+                    <span class="score-value" id="okxRateLevel">7.42</span>
+                </div>
+            </div>
+
+            <div class="date-display">
+                <span id="currentDate">2023/12/25</span>
+            </div>
+
+            <div class="total-score">
+                <div class="total-score-label">選擇</div>
+                <div class="total-score-value" id="bestChoice">商家 B</div>
+            </div>
+            <div class="best-score" id="bestRateInfo">匯率: 7.41</div>
+
+            <!-- 添加OKX结果显示 -->
+            <div class="okx-result">
+                <div class="okx-result-label">OKX換算結果</div>
+                <div class="okx-result-value" id="okxExchangeResult">¥15,308.22</div>
+            </div>
+
+            <div class="comparison-container">
+                <div class="comparison-option" id="merchantAOption">
+                    <div class="option-label">商家 A</div>
+                    <div class="option-value" id="merchantAAmount">5,361.9303 USDT</div>
+                    <div class="option-rate" id="merchantARate">匯率: 7.46</div>
+                    <div class="option-ku-amount" id="merchantAKuAmount">KU到帳金額: ¥39,988.55</div>
+                </div>
+                <div class="comparison-option winner" id="merchantBOption">
+                    <div class="option-label">商家 B</div>
+                    <div class="option-value" id="merchantBAmount">5,398.1107 USDT</div>
+                    <div class="option-rate" id="merchantBRate">匯率: 7.41</div>
+                    <div class="option-ku-amount" id="merchantBKuAmount">KU到帳金額: ¥40,000.00</div>
+                </div>
+            </div>
+
+            <div class="difference">
+                <div class="difference-label">多換了</div>
+                <div class="difference-value" id="differenceAmount">36.1804 USDT</div>
+            </div>
+
+            <button id="newCalculation" class="game-button">新的計算</button>
+            <button id="saveAsImage" class="game-button secondary">保存圖片</button>
+            <button id="viewHistory" class="game-button secondary">查看歷史記錄</button>
+        </div>
+
+        <!-- 历史记录面板 -->
+        <div id="historyPanel" class="card history-panel hidden">
+            <div class="history-header">
+                <h2>計算歷史記錄</h2>
+                <button id="closeHistory" class="close-btn">×</button>
+            </div>
+            <div class="history-content">
+                <div id="historyRecords" class="history-records">
+                    <!-- 历史记录将在这里显示 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 

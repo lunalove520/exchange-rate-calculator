@@ -1,0 +1,644 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #292D3E, #1E2233);
+    color: #444;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* 应用容器 */
+.app-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* 卡片样式 */
+.card {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.main-card {
+    position: relative;
+}
+
+/* 卡片头部 */
+.card-header {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-button, .filter-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.back-button:hover, .filter-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* 交易金额显示 */
+.exchange-amount {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-bottom: 40px;
+}
+
+.wallet-icon {
+    margin-right: 15px;
+}
+
+.amount {
+    flex: 1;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.amount span {
+    margin-right: 5px;
+}
+
+/* 方向选择器 */
+.direction-selector {
+    display: flex;
+    margin: -20px 20px 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.direction-button {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    border-radius: 12px;
+    background-color: white;
+    color: #666;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 0 5px;
+}
+
+.direction-button:first-child {
+    margin-left: 0;
+}
+
+.direction-button:last-child {
+    margin-right: 0;
+}
+
+.direction-button:hover {
+    background-color: #f8f8f8;
+}
+
+.direction-button.active {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+}
+
+/* 表单样式 */
+.exchange-form {
+    padding: 0 20px 20px;
+}
+
+.exchange-form.hidden {
+    display: none;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.amount-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    background-color: #f9f9f9;
+    transition: all 0.3s;
+}
+
+.amount-input:focus {
+    outline: none;
+    border-color: #7367F0;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.1);
+}
+
+/* 汇率展示区域 */
+.rates-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.rate-card {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.3s;
+}
+
+.rate-card.warning {
+    background-color: rgba(255, 59, 48, 0.1);
+    border: 1px solid rgba(255, 59, 48, 0.3);
+}
+
+.rate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.rate-header h3 {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+}
+
+.refresh-btn {
+    background: none;
+    border: none;
+    color: #7367F0;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.rate-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.rate-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+}
+
+.rate-input:focus {
+    outline: none;
+    border-color: #7367F0;
+}
+
+.rate-result {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* 比较结果 */
+.comparison-result {
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* 计算按钮 */
+.calculate-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(110, 142, 251, 0.3);
+}
+
+.calculate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(110, 142, 251, 0.4);
+}
+
+.calculate-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(110, 142, 251, 0.3);
+}
+
+/* 结果卡片 */
+.result-card {
+    position: relative;
+}
+
+.result-card.hidden {
+    display: none;
+}
+
+.result-header {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.result-header h2 {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.result-content {
+    padding: 20px;
+}
+
+/* 最优选择卡片 */
+.best-option-card {
+    background-color: #f0f9f0;
+    border: 1px solid #d0f0d0;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.best-option-title {
+    color: #1aad19;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.saving-amount {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1aad19;
+    margin: 10px 0;
+}
+
+/* 游戏式结果卡片 */
+.game-result-card {
+    background-color: #1E212E;
+    color: white;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.game-result-card.hidden {
+    display: none;
+}
+
+.score-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0 5px;
+}
+
+.level-info, .score-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.level-label, .score-label {
+    font-size: 1rem;
+    color: #7DF9FF;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+.level-value, .score-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #7DF9FF;
+}
+
+.score-divider {
+    width: 1px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 0 40px;
+}
+
+.date-display {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 5px 0 20px;
+}
+
+.total-score {
+    margin: 30px 0 10px;
+}
+
+.total-score-label {
+    font-size: 1.1rem;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.total-score-value {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: white;
+}
+
+.best-score {
+    font-size: 1.1rem;
+    color: #7DF9FF;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.comparison-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 30px;
+    margin: 30px 0;
+}
+
+.comparison-option {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 15px;
+    width: 48%;
+    transition: all 0.3s;
+}
+
+.comparison-option.winner {
+    background-color: rgba(125, 249, 255, 0.1);
+    border: 1px solid rgba(125, 249, 255, 0.3);
+}
+
+.option-label {
+    font-size: 1rem;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.option-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.option-rate {
+    font-size: 0.9rem;
+    color: #7DF9FF;
+    font-weight: 600;
+}
+
+.option-ku-amount {
+    font-size: 0.85rem;
+    color: #7DF9FF;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+/* 商家B样式 */
+#merchantBOption .option-label {
+    font-size: 0.9rem;
+}
+
+#merchantBOption .option-rate {
+    font-size: 1.1rem;
+}
+
+.difference {
+    margin: 20px 0 30px;
+}
+
+.difference-label {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.difference-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #7DF9FF;
+}
+
+.game-button {
+    background-color: white;
+    color: #1E212E;
+    border: none;
+    border-radius: 100px;
+    padding: 15px 0;
+    width: 80%;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 10px auto;
+    display: block;
+}
+
+.game-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.1);
+}
+
+.game-button.secondary {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* 历史记录面板 */
+.history-panel {
+    background-color: #1E212E;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 480px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-panel.hidden {
+    display: none;
+}
+
+.history-header {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-header h2 {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.history-content {
+    padding: 15px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.history-records {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.history-record {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 15px;
+    color: white;
+}
+
+.history-record-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.history-record-content {
+    margin-bottom: 10px;
+}
+
+.record-direction {
+    font-weight: 600;
+    color: #7DF9FF;
+    margin-bottom: 5px;
+}
+
+.record-result {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.record-choice {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.record-difference {
+    color: #7DF9FF;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .rates-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .amount {
+        font-size: 1.8rem;
+    }
+    
+    .score-header {
+        margin: 20px 0 5px;
+    }
+    
+    .level-value, .score-value {
+        font-size: 1.8rem;
+    }
+    
+    .score-divider {
+        height: 50px;
+        margin: 0 25px;
+    }
+    
+    .total-score-value {
+        font-size: 3rem;
+    }
+    
+    .comparison-container {
+        padding: 0 15px;
+    }
+    
+    .option-value {
+        font-size: 1.4rem;
+    }
+}
+
+.okx-result {
+    margin: 10px 0 25px;
+}
+
+.okx-result-label {
+    font-size: 1.1rem;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.okx-result-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #FF9900;
+    margin-bottom: 5px;
+} 
