@@ -641,4 +641,19 @@ label {
     font-weight: 700;
     color: #FF9900;
     margin-bottom: 5px;
+}
+
+.temp-screenshot-container {
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.temp-screenshot-container .score-header,
+.temp-screenshot-container .date-display,
+.temp-screenshot-container .total-score,
+.temp-screenshot-container .best-score,
+.temp-screenshot-container .okx-result,
+.temp-screenshot-container .comparison-container,
+.temp-screenshot-container .difference {
+    margin-bottom: 20px;
 } 

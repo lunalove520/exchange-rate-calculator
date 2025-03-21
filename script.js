@@ -409,14 +409,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 保存圖片功能
+    // 保存圖片功能，只保存上半部分結果
     saveAsImage.addEventListener('click', function() {
+        // 暫時隱藏底部按鈕
+        const buttons = [
+            newCalculation,
+            saveAsImage,
+            viewHistory
+        ];
+        
+        // 保存原始display值
+        const originalDisplays = buttons.map(button => button.style.display);
+        
+        // 隱藏按鈕
+        buttons.forEach(button => button.style.display = 'none');
+        
+        // 截取整個結果卡片
         html2canvas(gameResultCard).then(function(canvas) {
             // 創建下載鏈接
             const link = document.createElement('a');
             link.download = '匯率比較結果_' + new Date().toISOString().split('T')[0] + '.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
+            
+            // 恢復按鈕顯示
+            buttons.forEach((button, index) => {
+                button.style.display = originalDisplays[index] || '';
+            });
         });
     });
 
